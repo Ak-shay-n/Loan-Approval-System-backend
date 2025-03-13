@@ -2,6 +2,8 @@ const express = require("express");
 const dotenv = require("dotenv");
 const cors = require("cors");
 const connectDB = require("./config/db");
+const authRoutes = require("./routes/authRoutes");
+const loanRoutes = require("./routes/loanRoutes");
 
 dotenv.config();
 connectDB();
@@ -12,8 +14,7 @@ app.use(express.json());
 app.use(cors());
 
 // ✅ Correctly Import and Use Routes
-const authRoutes = require("./routes/authRoutes");
-const loanRoutes = require("./routes/loanRoutes");
+
 
 app.use("/api/users", authRoutes);
 app.use("/api/loans", loanRoutes);
