@@ -1,9 +1,10 @@
 const express = require("express");
+const { applyLoan, getLoanStatus } = require("../controllers/loanController");
+const protect = require("../middlewares/authMiddleware");
+
 const router = express.Router();
 
-// Add your loan routes here later
-// Example:
-// const { getAllLoans } = require("../controllers/loanController");
-// router.get("/", getAllLoans);
+router.post("/apply", protect, applyLoan);
+router.get("/:id", protect, getLoanStatus); // Fixed incorrect route
 
 module.exports = router;
