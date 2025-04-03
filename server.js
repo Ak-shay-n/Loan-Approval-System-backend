@@ -17,8 +17,10 @@ const app = express();
 
 // Middleware
 app.use(express.json());
-app.use(cors());
-
+app.use(cors({
+    origin: 'http://localhost:3001',
+    credentials: true
+}));
 // Import routes
 const authRoutes = require("./routes/authRoutes");
 const loanRoutes = require("./routes/loanRoutes");

@@ -5,11 +5,22 @@ const generateToken = require("../utils/generateToken");
 // @route   POST /api/auth/register
 // @access  Public
 const registerUser = async (req, res) => {
-    const { name, email, password } = req.body;
+    const { name, email, password, role } = req.body;
 
     try {
         if (!name || !email || !password) {
             return res.status(400).json({ message: "All fields are required" });
+        }
+
+        // Email format validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            return res.status(400).json({ message: "Please provide a valid email address" });
+        }
+
+        // Password strength validation (minimum 6 characters)
+        if (password.length < 6) {
+            return res.status(400).json({ message: "Password must be at least 6 characters long" });
         }
 
         const userExists = await User.findOne({ email });
@@ -18,18 +29,25 @@ const registerUser = async (req, res) => {
             return res.status(400).json({ message: "User already exists" });
         }
 
-        const user = new User({ name, email, password });
+        // If role is provided, use it, otherwise default to "user"
+        const user = new User({ 
+            name, 
+            email, 
+            password,
+            role: role || "user" 
+        });
         await user.save();
 
         res.status(201).json({
             _id: user._id,
             name: user.name,
             email: user.email,
+            role: user.role,
             token: generateToken(user._id),
         });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: "Server error" });
+        res.status(500).json({ message: error.message || "Server error" });
     }
 };
 
